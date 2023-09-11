@@ -14,6 +14,8 @@ def sliding_window(x_array, w, step):
 
     return A_matrix
 
+print('Правда, что что люди, которые получают больше 50k, имеют как минимум высшее образование? (признак education – Bachelors, Prof-school, Assoc-acdm, Assoc-voc, Masters или Doctorate)')
+
 window = 3
 step_s = 1
 x1 = np.array([8, 1, 4, 5, -2, 5, 9, 0])
@@ -25,6 +27,15 @@ A1 = np.array([[8, 1, 4],
                     [5, 9, 0]])
 
 print(np.array_equal(sliding_window(x1, w=window, step=step_s),A1))
+
+window = 2
+step_s = 4
+x2 = np.array([8, 3, 4, 1, -6, 5, 9, 2, 10, 11, -14, 0])
+A2 = np.array([[8, 3],
+               [-6, 5],
+               [10, 11]])
+
+print(np.array_equal(sliding_window(x2, w=window, step=step_s),A2))
 
 data = pd.read_csv("https://archive.ics.uci.edu/ml/machine-learning-databases/adult/adult.data", sep = ", ", header=None,
                    names = ["age", "workclass", "fnlwgt", "education",
@@ -76,7 +87,6 @@ low_income_std = low_income['age'].std()
 # Вывод результатов
 print(f"Средний возраст : {high_income_mean:.2f}")
 print(f"Среднеквадратичное отклонение возраста : {high_income_std:.2f}")
-
 print(f"Средний возраст менее 50K в год: {low_income_mean:.2f}")
 print(f"Среднеквадратичное отклонение возраста менее 50K в год: {low_income_std:.2f}")
 
@@ -91,8 +101,6 @@ plt.show()
 
 
 education_counts = data[data['salary'] == '>50K']['education'].value_counts()
-
-# Вывод результатов
 print(education_counts)
 
 
