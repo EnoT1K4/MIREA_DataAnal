@@ -1,49 +1,40 @@
 from collections import Counter
-import matplotlib.pyplot as plt
-import numpy as np
 import math
+from matplotlib import pyplot as plt
+import pandas as pd
+import numpy as np
 
-data = [1, 2, 2, 3, 3, 3, 4, 4, 4, 4]  # Replace this with your own data
+data = pd.read_csv("/Users/dubrovskijvladislav/Downloads/МАД - Лист1-3.csv")
+months = list(data["Month"].dropna().apply(lambda x : int(x)))
+height = list(data["Height"].dropna().apply(lambda x : float(x.replace(',','.'))))
 
-# Step 2: Count the frequency of each unique value
-frequency_dict = Counter(data)
 
-    # Step 3: Sort the dictionary items by keys
+frequency_dict = Counter(months)
 sorted_items = sorted(frequency_dict.items())
-
-    # Step 4: Calculate relative frequencies
-total_observations = len(data)
+total_observations = len(months)
 relative_frequencies = [(value / total_observations) for _, value in sorted_items]
-
-    # Print the variation series with absolute and relative frequencies
 print("вариационный ряд с абсолютными и относительными частотами:")
 for key, value in sorted_items:
-    print(f"{key}: абсолютная частота: {value}, относительная частота: {value / total_observations}")
-        
-
-
-frequency = Counter(data)
-total_values = len(data)
+    print(f"{key}: абсолютная частота: {value}, относительная частота: {round(value / total_observations,2)}")
+ 
+ 
+    
+frequency = Counter(months)
+total_values = len(months)
 relative_frequency = [count / total_values for count in frequency.values()]
-
-plt.plot(list(frequency.keys()), relative_frequency, marker='o')
+plt.plot(sorted(list(frequency.keys())), relative_frequency, marker='o')
 plt.xlabel('Значения')
 plt.ylabel('Относительные частоты')
 plt.title('Полигон относительных частот')
 plt.show()
 
-
-
-
-def empirical_cdf(data):
-    sorted_data = np.sort(data)
+def empirical_cdf(months):
+    sorted_data = np.sort(months)
     n = len(sorted_data)
     y = np.arange(1, n+1) / n
     return sorted_data, y
-
-
 #график
-x, y = empirical_cdf(data)
+x, y = empirical_cdf(months)
 plt.plot(x, y, drawstyle='steps-post')
 plt.xlabel('Значения выборки')
 plt.ylabel('Значения функции')
@@ -64,92 +55,68 @@ def opisatelnaya_statka(data):
     # Коэффициент вариации - это отношение стандартного отклонения к среднему значению выборки. Он позволяет оценить относительную изменчивость выборки:
     coefficient_of_variation = (std_deviation / mean) * 100
     
-    print('Выборочное среднее:' , mean , '\n' , 
-          'Выборочная дисперсия' , variance , '\n' ,
-          'Выборочная медиана' , median , '\n' ,
-          'Коэффициент вариации' , coefficient_of_variation , '\n' , 
+    print('Выборочное среднее:' , mean , '\n', 
+          'Выборочная дисперсия' , variance , '\n',
+          'Выборочная медиана' , median , '\n',
+          'Коэффициент вариации' , coefficient_of_variation , '\n', 
           'Выборочное стандартное отклонениe' , std_deviation)
-opisatelnaya_statka(data)
+opisatelnaya_statka(months)
 
+#part 2
 
-
-
-
-#part 2 with  new data only
 def calculate_groups(n):
     m = 1 + math.log2(n)
     return math.ceil(m)
 
 # Example usage
-data_points = len(data) #enter u dataset
+data_points = len(height) #enter u dataset
 groups = calculate_groups(data_points)
-print(groups, 'group')
+print(groups, 'groups in data')
 
-
-min_value = min(data)  
-max_value = max(data) 
-m = len(data)/groups  
+min_value = min(height)  
+max_value = max(height) 
+m = len(height)/groups  
 interval_width = (max_value - min_value) / m
 
-boundaries = []
-for i in range(int(m)):
-    boundary = min_value + i * interval_width
-    boundaries.append(boundary)
+def calculate_boundaries(sample, h):
+    min_value = min(sample)
+    boundaries = [min_value + (i * h) for i in range(len(sample) + 1)]
+    return boundaries
 
-print(boundaries, 'bound')
+boundaries = calculate_boundaries(height, m)
+print(boundaries, 'boundaries in data')
 
 # Создание списка интервальных данных
 intervals = []
-for i in range(len(data)-1):
-    intervals.append((data[i], data[i+1]))
+for i in range(len(height)-1):
+    intervals.append((height[i], height[i+1]))
 # Сортировка списка
 intervals_1 = sorted(intervals)
-# Вывод отсортированного списка
-    
-    # Step 2: Sort intervals in ascending order
 intervals_1.sort()
-    
-    # Step 3 and 4: Calculate midpoints and store in a new list
 midpoints = [(interval[0] + interval[1]) / 2 for interval in intervals_1]
-    
-    # Step 5: Sort midpoints in ascending order
 midpoints.sort()
-    
-    # Step 6: Print the variational series
 print(midpoints, 'midpoints')
 
-
-# Здесь предполагается, что у вас есть список значений интервалов выборки и соответствующих относительных частот
+# список значений интервалов выборки и соответствующих относительных частот
 intervals = [val[1]-val[0] for val in intervals_1]
-
 frequency_dict = Counter(intervals)
-
-
-    # Step 3: Sort the dictionary items by keys
 sorted_items = sorted(frequency_dict.items())
-
-    # Step 4: Calculate relative frequencies
 total_observations = len(intervals)
 relative_frequencies = [(value / total_observations) for _, value in sorted_items]
 frequencies = relative_frequencies
-
-print(len(intervals), len(frequencies))
-
-# Построение гистограммы
 plt.bar(intervals, frequencies)
-
-# Добавление подписей осей
 plt.xlabel('Интервалы выборки')
 plt.ylabel('Относительные частоты')
-
-# Отображение гистограммы
 plt.show()
 
-x, y = empirical_cdf(data)
+x, y = empirical_cdf(height)
 plt.plot(x, y, drawstyle='steps-post')
 plt.xlabel('Значения выборки')
 plt.ylabel('Значения функции')
 plt.title('Эмпирическая функция распределения')
 plt.show()
 
-opisatelnaya_statka(data)
+opisatelnaya_statka(height)
+
+
+
