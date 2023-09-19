@@ -38,7 +38,7 @@ df_grouped = data.groupby('Year').filter(lambda x: len(x) >= 6)
 data["UDP"] = 100*data[ "UnemployedDisabled"]/data[ "UnemployedTotal"]
 data_group = data. groupby ("Year"). filter (lambda x: (x["UDP"].count()) > 5)
 data_group = data_group. groupby ("Year"). mean()
-x = np. array (data_group. index).reshape(len (data_group.index), 1)
+x = np.array (data_group. index).reshape(len (data_group.index), 1)
 y = np.array(data_group["UDP" ]).reshape(len(data_group.index), 1)
 model = LinearRegression()
 model. fit(x, y)

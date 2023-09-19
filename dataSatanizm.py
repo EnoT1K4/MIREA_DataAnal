@@ -34,6 +34,8 @@ def empirical_cdf(months):
     y = np.arange(1, n+1) / n
     return sorted_data, y
 #график
+
+
 x, y = empirical_cdf(months)
 plt.plot(x, y, drawstyle='steps-post')
 plt.xlabel('Значения выборки')
@@ -98,15 +100,21 @@ midpoints.sort()
 print(midpoints, 'midpoints')
 
 # список значений интервалов выборки и соответствующих относительных частот
-intervals = [val[1]-val[0] for val in intervals_1]
+intervals = [max(val[1],val[0]) - min(val[1],val[0]) for val in intervals_1]
 frequency_dict = Counter(intervals)
+abs_frec = [val for key,val in frequency_dict.items()]
 sorted_items = sorted(frequency_dict.items())
 total_observations = len(intervals)
-relative_frequencies = [(value / total_observations) for _, value in sorted_items]
-frequencies = relative_frequencies
-plt.bar(intervals, frequencies)
-plt.xlabel('Интервалы выборки')
-plt.ylabel('Относительные частоты')
+relative_frequencies = [round((value / total_observations),5) for _, value in sorted_items]
+print(intervals_1, 'Inter', '\n', abs_frec, 'abs', '\n', relative_frequencies, '\n', 'rel')
+#plt.bar(intervals, frequencies)
+#plt.xlabel('Интервалы выборки')
+#plt.ylabel('Относительные частоты')
+#plt.show()
+
+fig = plt.figure()
+ax = fig.add_subplot (111)
+ax.hist (height, edgecolor='black', weights=np.ones_like(height) / len (height)) 
 plt.show()
 
 x, y = empirical_cdf(height)
