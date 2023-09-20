@@ -18,7 +18,7 @@ data.drop('Unnamed: 0',axis=1,inplace=True)
 data.fillna("No description for this channel",inplace=True)
 def convert_subscribers(subscribers):
     if 'M' in subscribers:
-        return float(subscribers.replace('M', '')) * 10**6  # Convert to millions
+        return float(subscribers.replace('M', ''))   # Convert to millions
     else:
         return float(subscribers)
 
@@ -30,7 +30,7 @@ data['Subscribers'] = data['Subscribers'].astype(int)  # Change to int
 
 def convert_views(views):
     if 'B' in views:
-        return float(views.replace('B', '')) * 10**9 # Convert to millions
+        return float(views.replace('B', '')) * 10**3 # Convert to millions
     else:
         return float(views)
 
@@ -56,6 +56,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 scaler = StandardScaler()
 X_train_scaled = scaler.fit_transform(X_train)
 X_test_scaled = scaler.transform(X_test)
+
 
 
 model = LinearRegression()
